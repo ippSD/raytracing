@@ -2,4 +2,4 @@
 
 Simple ray tracing implementation on Rust from  _''Ray Tracing in One Weekend''_ repository. Cubic objects available.
 
-![Sample Image](https://www.github.com/IppSD/ray_tracing.png)
+![Sample Image](ray_tracing.png)
