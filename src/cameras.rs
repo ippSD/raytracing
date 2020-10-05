@@ -1,11 +1,32 @@
+//! Camera module. The Camera structure generates the first rays
+//! which will collide with the world objects and change colors,
+//! thus composing the world image.
+
 use crate::vectors::{Vec3, Vec3Methods};
 use crate::rays::Ray;
 use rand::Rng;
 
+/// Camera structure (enum).
 pub enum Camera {
     Simple(CameraSimple),
     Focus(CameraFocus),
 }
+
+
+/// Ray spawning trait.
+pub trait CameraRay{
+    /// Generate a ray from camera origin to another
+    /// point defined by the adimensional parameters
+    /// ``s`` and ``t``.
+    ///
+    /// # Parameters:
+    ///
+    /// * `self` - Camera.
+    /// * `s` - Horizontal parameter from 0 to 1.
+    /// * `t` - Vertical parameter from 0 to 1.
+    fn get_ray(&self, s: f32, t: f32) -> Ray;
+}
+
 
 impl CameraRay for Camera {
     fn get_ray(&self, s: f32, t: f32) -> Ray {
@@ -16,6 +37,7 @@ impl CameraRay for Camera {
     }
 }
 
+/// Simple camera structure.
 pub struct CameraSimple {
     origin: Vec3,
     lower_left_corner: Vec3,
@@ -24,14 +46,18 @@ pub struct CameraSimple {
 }
 
 impl CameraSimple {
-    /**
-    # Arguments
-    * `look_from` - camera origin.
-    * `look_at` - point at which the camera points.
-    * `vup` - world's 'up' vector. Camera's vertical horizontal axis will be parallel to the world.
-    * `vfov` - FOV in degrees along vertical axis.
-    * `aspect` - Height to Width ratio.
-    */
+    /// CameraSimple constructor.
+    ///
+    /// # Parameters:
+    ///
+    /// * `look_from` - camera origin.
+    /// * `look_at` - point at which the camera points.
+    /// * `vup` - world's 'up' vector. Camera's vertical horizontal axis will be parallel to the world.
+    /// * `vfov` - FOV in degrees along vertical axis.
+    /// * `aspect` - Height to Width ratio.
+    ///
+    /// # Returns:
+    /// * `CameraSimple` - Camera object.
     pub fn new(look_from: Vec3, look_at: Vec3, vup: Vec3, vfov: f32, aspect: f32) -> CameraSimple {
         let w: Vec3 = (look_from - look_at).unit_vector();
         let u: Vec3 = vup.cross(&w).unit_vector();
@@ -54,6 +80,7 @@ impl CameraRay for CameraSimple {
     }
 }
 
+/// More real-like camera structure with aperture support.
 pub struct CameraFocus{
     origin: Vec3,
     lower_left_corner: Vec3,
@@ -66,16 +93,20 @@ pub struct CameraFocus{
 }
 
 impl CameraFocus{
-    /**
-    # Arguments
-    * `look_from` - camera origin.
-    * `look_at` - point at which the camera points.
-    * `vup` - world's 'up' vector. Camera's vertical horizontal axis will be parallel to the world.
-    * `vfov` - FOV in degrees along vertical axis.
-    * `aspect` - Height to Width ratio.
-    * `aperture` - len's aperture/diameter.
-    * `focus_dist` - distance to the plane that is being focused.
-    */
+    /// CameraFocus constructor.
+    ///
+    /// # Parameters:
+    /// * `look_from` - camera origin.
+    /// * `look_at` - point at which the camera points.
+    /// * `vup` - world's 'up' vector. Camera's vertical horizontal axis will be parallel to the world.
+    /// * `vfov` - FOV in degrees along vertical axis.
+    /// * `aspect` - Height to Width ratio.
+    /// * `aperture` - len's aperture/diameter.
+    /// * `focus_dist` - distance to the plane that is being focused.
+    ///
+    /// # Returns:
+    ///
+    /// * `CameraFocus` - camera object.
     pub fn new(look_from: Vec3, look_at: Vec3, vup: Vec3, vfov: f32, aspect: f32, aperture: f32, focus_dist: f32) -> CameraFocus {
         let w: Vec3 = (look_from - look_at).unit_vector();
         let u: Vec3 = vup.cross(&w).unit_vector();
@@ -102,6 +133,7 @@ impl CameraRay for CameraFocus{
     }
 }
 
+/// Random point on a unit-disk on plane Z=0.
 fn random_in_unit_disk() -> Vec3{
     let mut rng = rand::thread_rng();
     let mut p: Vec3 = Vec3::new(2e0, 2e0, 2e0);
@@ -109,8 +141,4 @@ fn random_in_unit_disk() -> Vec3{
         p = Vec3::new(rng.gen::<f32>(), rng.gen::<f32>(), 0e0) * 2e0 - Vec3::new(1e0, 1e0, 0e0);
     }
     return p;
-}
-
-pub trait CameraRay{
-    fn get_ray(&self, s: f32, t: f32) -> Ray;
 }

@@ -1,0 +1,31 @@
+mod vectors;
+mod hittable;
+mod objects;
+mod rays;
+mod materials;
+
+use hittable::Fov;
+use vectors::{Vec3};
+use objects::{Sphere, Form};
+use crate::materials::{Material, MetalKind};
+
+
+fn main() -> std::io::Result<()> {
+    let mut rng = rand::thread_rng();
+
+    let sphere_mini: Form = Form::Sphere(
+        Sphere::new(
+        Vec3::zeros(),
+        1e0,
+        Material::Metal(MetalKind::new(Vec3::zeros(), 0e0))
+        )
+    );
+
+    let sphere_big: Sphere = Sphere::new(
+        Vec3::new(0e0, 0e0, 0e0),
+        2e0,
+        Material::Metal(MetalKind::new(Vec3::zeros(), 0e0))
+    );
+    println!("F_12 = {}", sphere_mini.fov(&sphere_big));
+    Ok(())
+}

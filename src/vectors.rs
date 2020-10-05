@@ -1,3 +1,13 @@
+//! 3D Vector implementation, either for points or colors.
+//! Class Vec3 contains:
+//! * `Constructors/Initializators`: new, const_new, zeros, ones, random.
+//! * `Basic math`: +, -, *, /, +=, -=, *=, /=.
+//! * `Getters`: x, y, z (for points), r, g, b (for colors).
+//! * `Vector ops`: length, square_length, dot, cross, unit_vector, make_unit_vector.
+//! * `Color ops`: gamma_2, gamma_3.
+//! * `Others`: powi, max, is_nan.
+//!
+
 use std::ops::Add;
 use std::ops::AddAssign;
 use std::ops::Sub;
